@@ -1,0 +1,97 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap');
+svg{
+    
+    font-size: 100px;
+    fill:aliceblue;
+    
+}
+h1{
+    text-align: center;
+}
+body{
+
+    font-family: 'Roboto' ,sans-serif;
+    background-color: black;
+    color:white;
+    display: flex;
+    justify-content: center;
+    font-size: 1.5rem;
+
+}
+.main-logo{
+    display: flex;
+    flex-direction: column;
+}
+main{
+    width:700px;
+    margin: 50px;
+}
+#timer{
+    display: flex;
+    justify-content: space-between;
+}
+.word{
+    display: inline-block;
+    margin:3px;
+    
+}
+#words{
+    filter: blur(5px);
+    color:darkgrey;
+   
+}
+#game{
+    margin-top: 30px;
+    height: 110px;
+    overflow:hidden ;
+    position: relative;
+}
+#focus-words{
+    position: absolute;
+    inset: 0;
+    padding-top: 35px;
+     text-align: center;
+}
+ 
+#game:focus #words{
+    filter: blur(0);
+}
+
+#game:focus #focus-words{
+    display: none;
+}
+@keyframes blink {
+    0%{
+        opacity: 1;
+    }
+    50%{
+        opacity: 0;
+    }
+    100%{
+        opacity: 1;
+    }
+    
+}
+#game:focus #cursor{
+    display: block;
+}
+#game:focus {
+    outline: 0;
+}
+#cursor{
+    display: none;
+    width: 2px;
+    height:1.5rem;
+    background-color: yellow;
+    position: fixed;
+    top: 340px;
+    animation: blink .3s infinite;
+    
+}
+.letter.correct{
+    color:white
+}
+.letter.incorrect{
+    color:red 
+}
