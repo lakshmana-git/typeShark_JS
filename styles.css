@@ -27,7 +27,7 @@ main{
     width:700px;
     margin: 50px;
 }
-#timer{
+#time{
     display: flex;
     justify-content: space-between;
 }
@@ -43,7 +43,7 @@ main{
 }
 #game{
     margin-top: 30px;
-    height: 110px;
+    height: 100px;
     overflow:hidden ;
     position: relative;
 }
@@ -94,4 +94,21 @@ main{
 }
 .letter.incorrect{
     color:red 
+}
+
+#game.over #words{
+    opacity: .5;
+    filter: blur(0);
+}
+
+#game.over:focus #cursor{
+    display: none;
+}
+#game.over #focus-words{
+    display: none;
+}
+#restart{
+    width: 100px;
+    height:30px;
+    font-size: 1rem;
 }

@@ -1,9 +1,15 @@
 const words = 'typing games are interactive software applications designed to improve typing skills while making the learning process engaging and entertaining. These games typically present players with various challenges, such as typing words, sentences, or paragraphs within a time limit. The games often include features like accuracy tracking, speed measurement, and progression levels, motivating players to enhance their typing proficiency. By combining the practice of typing with elements of fun and competition, typing games have become a popular way for people of all ages to develop and refine their typing abilities while enjoying the process'.split(' ');
 
-console.log(words);
+
 
 let wordCount = words.length;
 
+
+const gameTime = 30 * 1000
+window.timer = null;
+
+
+window.gameStart = null
 
 function addClass(element,name){
     element.className += ' '+name
@@ -15,6 +21,7 @@ function removeClass(element,name){
 function formatWord(word){
     let main = document.createElement("div")
     main.className = "word"
+ 
     
    
     for(let i=0;i<word.length;i++){
@@ -35,12 +42,37 @@ function formatWord(word){
 function newGame() {
     document.getElementById('words').innerHTML = ''; 
     for (let i = 0; i < words.length; i++) {
-        let x = formatWord(words[i]) 
+        const random = Math.floor(Math.random() * words.length);
+        let x = formatWord(words[random]) 
         document.getElementById('words').appendChild(x) 
     }
 
     addClass(document.querySelector('.word'),'current')
     addClass(document.querySelector('.letter'),'current')
+    document.getElementById('info').innerHTML = (gameTime/1000)+""
+    window.timer = null;
+}
+function getWpm(){
+    const words = [...document.querySelectorAll('.word')]
+    const lastType = document.querySelector('.word.current')
+    const lastIndex = words.indexOf(lastType)
+    const typeWords = words.slice(0,lastIndex)
+    const correctWords = typeWords.filter(word=>{
+        const letters = [...word.children]
+        const incorrectletters = letters.filter(letter=>letter.className.includes('incorrect'))
+        const correctlettters = letters.filter(letter=>letter.className.includes('correct'))
+        return incorrectletters.length ===0 && correctlettters.length===letters.length
+
+    })
+   
+    return correctWords.length / gameTime *60000
+}
+function gameOver(){
+    clearInterval(window.timer)
+
+    addClass(document.getElementById('game'),'over')
+    const result = getWpm();
+    document.getElementById('info').innerHTML = `WPN ${result}`
 }
 
 
@@ -57,8 +89,28 @@ document.getElementById('game').addEventListener('keyup',(event)=>{
        const isSpace = key === ' '
        const isBackSpace = key === 'Backspace'
        const isFirstLetter = currentletter ===currentWord.firstChild
-     
+       if(document.querySelector('#game.over')){
+             return;
+       }
        console.log({key,expected})
+
+       if(!window.timer && isLetter){
+         window.timer = setInterval(()=>{
+                   if(!window.gameStart){
+                     window.gameStart = (new Date()).getTime();
+                   }
+                   const currentTime  = (new Date()).getTime()
+                   const msPassed = currentTime - window.gameStart
+                   const sPassed = Math.round(msPassed/1000)
+                   const secLeft = (gameTime/1000)- sPassed
+                   if(secLeft<=0){
+                      gameOver();
+                      return;
+                   }
+                   document.getElementById('info').innerHTML = secLeft + ''
+         },1000)
+         
+       }
 
        if(isLetter){
           if(currentletter){
@@ -128,7 +180,17 @@ document.getElementById('game').addEventListener('keyup',(event)=>{
                 
               }
        }
+        //move lines
+        if(currentWord.getBoundingClientRect().top>400){
 
+            const words = document.getElementById('words')
+            const margin = parseInt(words.style.marginTop || '0px')
+            words.style.marginTop = (margin- 35) + 'px'
+            alert('game')
+
+
+
+        }
 
 
        //move cursour
@@ -148,6 +210,13 @@ document.getElementById('game').addEventListener('keyup',(event)=>{
     }
 
         
+})
+
+
+document.getElementById('restart').addEventListener('click',()=>{
+   
+    window.location.reload();
+    
 })
 
 newGame();
